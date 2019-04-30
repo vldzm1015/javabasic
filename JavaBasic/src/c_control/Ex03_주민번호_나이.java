@@ -12,8 +12,10 @@ public class Ex03_주민번호_나이 {
 	public static void main(String[] args) {
 		String id = "032212-3031115";
 		
-		String nai1 = id.substring(0,2);			// nai1 = "80"
-		int nai2 = Integer.parseInt  (nai1);		//String -> int ( "80" -> 80)
+		String nai1 = id.substring(0,2);			
+		// nai1 = "80"
+		int nai2 = Integer.parseInt  (nai1);		
+		//String -> int ( "80" -> 80)
 		int age = 0;
 		Calendar c = Calendar.getInstance();
 		int year = c.get(Calendar.YEAR);
