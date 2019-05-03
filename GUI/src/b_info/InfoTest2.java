@@ -93,12 +93,12 @@ public class InfoTest2 {
 		tfId.addFocusListener(new IdFocus());
 	}//end of eventProc()
 	
-	class IdFocus implements FocusListener{
+	class IdFocus extends FocusAdapter{
 
-		public void focusGained(FocusEvent e) {
-		}
+//		public void focusGained(FocusEvent e) {
+//		}
 		public void focusLost(FocusEvent e) {
-//			"8888888-1234567"
+////			"8888888-1234567"
 			String id = tfId.getText();
 			char sung = id.charAt(7);
 			if(sung=='1'|sung=='3') tfSex.setText("남자");

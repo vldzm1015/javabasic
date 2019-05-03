@@ -1,14 +1,8 @@
 package b_info;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
 public class InfoTest3 {
 //	1. 멤버변수 선언
@@ -73,14 +67,50 @@ public class InfoTest3 {
 		
 		f.setSize(600,480);
 		f.setVisible(true);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
 	}
+	void eventProc() {
+		MyHdlr mh= new MyHdlr();
+		bExit.addMouseListener(mh);
+//		Listener 먼저 해놓고 어댑터 사용권장
+	}
+//	class MyHdlr implements MouseListener{
+//	동일하나 여러개의 오버라이딩 중 하나만 필요할 때는 어댑터사용
+	class MyHdlr extends MouseAdapter{	
+		public void mouseClicked(MouseEvent e) {
+			Object obj = e.getSource();
+			if(obj==bExit) {
+				System.exit(0);
+			}		
+		}
+	}
+	
 	public static void main(String[] args) {
 		InfoTest3 it = new InfoTest3();
 		it.addLayout();
-		
+		it.eventProc();
 
 	}
 
 }
+
+//interface AAListener{
+//	void a();
+//	void b();
+//	void c();
+//}
+//class AAAdapter implements AAListener{
+//	public void a() {}
+//	public void b() {}
+//	public void c() {}
+//}
+//class MyhHdlr extends AAAdapter{
+//	public void a() {}
+//}
+//
+//
+//class MyhHdlr implements AAListener{
+//	public void a() {}
+//	public void b() {}
+//	public void c() {}
+//}

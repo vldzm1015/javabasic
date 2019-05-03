@@ -1,0 +1,18 @@
+*Java IO(Input Output) - 자바 입출력
+
+	입출력 - Stream
+	 	- Java.io 패키지
+	 	
+	1. Byte 스트림
+		- Input 스트림 - FileInputStream
+		- Output스트림 - FileOutputStream
+		
+		+필터스트림
+			`DataOutputStream - DataInputStream
+			`ObjectOutputStream - ObjectInpurStream( *직렬화필수* )
+			
+	2. Char 스트림
+		- Reader - FileReader
+		- Writer - FileWriter
+		
+	cf.RandomAccessFile : 입출력스트림
