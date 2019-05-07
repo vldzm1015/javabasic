@@ -4,20 +4,29 @@ class Bread
 {
 	String bread;
 
-	//##  	
-
+	//##  	 : wait()  / notifyAll()
+	boolean isCheck = false;
+	
 	public void setBread( String bread )
-	{
+	{	
 		this.bread = bread;
 		//## 		
-	
-
+		isCheck = true;
+		synchronized (bread) {
+			notifyAll();
+		}
 	}	
 
 	public String getBread()
 	{
 		//## 		
-
+		if(isCheck==false) {
+			try {
+				synchronized (bread) {
+					wait();
+				}
+			} catch (InterruptedException e) { }
+		}
 		return bread;
 	}
 }

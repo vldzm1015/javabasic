@@ -1,7 +1,6 @@
 package b_operator;
 
 import java.util.Scanner;
-
 /*
  *  삼항연산자
  *  		(조건)?  A  : B
@@ -10,14 +9,17 @@ import java.util.Scanner;
 public class Ex09_Samhang {
 
 	public static void main(String[] args) {
+		   //3항을 안썼을 때
 //		int score = 81;
 //		String result = "";
 //		if(score>=80) result =  "합격" ;
 //		else result = "불합격" ;
-//		System.out.println( "당신은" + result + "입니다.");   //3항을 안썼을 때
+//		System.out.println( "당신은" + result + "입니다.");
 		
 		int score = 81;
 		String result = (score>=80)? "합격" : "불합격" ;
+//		(조건)?  A  : B
+//		조건이 true이면 A를 실행하고,  false이면 B를 실행한다.
 		System.out.println(result);
 		
 		// 두 수를 입력받아 큰 수를 출력

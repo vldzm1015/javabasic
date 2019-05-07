@@ -4,9 +4,9 @@ import javax.swing.*;
 
 
 public class Ex3_DalTest extends Frame {
-	
+
 	Dal a, b, c;
-	
+
 	public Ex3_DalTest()
 	{
 		setSize( 500, 400 );
@@ -15,13 +15,15 @@ public class Ex3_DalTest extends Frame {
 		a = new Dal(this, 0, 50);
 		b = new Dal(this, 0, 100);
 		c = new Dal(this, 0, 150);
-		
+
 		// # 
 		// 각 객체의 쓰레드 메소드(run) 호출한다 
+		new Thread(a).start( );
+		new Thread(b).start( );
+		new Thread(c).start( );
 
-		
 	}	
-	
+
 
 
 	public void paint( Graphics g )
@@ -34,7 +36,7 @@ public class Ex3_DalTest extends Frame {
 
 		g.setColor(Color.green);
 		g.drawString("__@", c.x, c.y );
-			
+
 	}
 
 	public static void main(String args[] )
@@ -54,23 +56,33 @@ public class Ex3_DalTest extends Frame {
 	- 화면을 다시 그린다 (*) app.repaint() 이용
 	- 임의의 수만큼 잠시 쓰레드를 블럭한다
 	# 위의 작업을 반복한다
-*/
-class Dal 
+ */
+class Dal implements Runnable
 {
 	int x, y;
 	int speed;
 	Frame app;
-	
+
 	public Dal( Frame _app, int _x, int _y )
 	{
 		app = _app;
 		x = _x;
 		y = _y;	
 	}
-	
+
 	public void run()
 	{
-		
+		while(true) 
+		{
+			speed = (int) (Math.random()*10); //0~9의 임의의 수. 랜덤스피드
+			x += speed;
+			app.repaint();
+			try {
+				Thread.sleep( (int) (Math.random()*100)); // 랜덤 sleep스피드
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 
 	}	
 }

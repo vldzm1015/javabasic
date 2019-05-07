@@ -34,7 +34,32 @@ public class Ex4_ZBombTest extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 
 				// 1- 카운트 다운을 시작하는 스레드 
-				
+				new Thread( new Runnable() {
+					public void run() {
+						for (int i = 10; i >0; i--) {
+							if(inputChk) {
+								lb.setText("빙고");
+								return;
+							}
+							if(i==1) image.setIcon(new ImageIcon("D:/mywork/java/git/Basic5Class/src/thread/basic/imgs/bomb_2.jpg")) ;
+								lb.setText(String.valueOf(i));
+								try {
+									Thread.sleep(1000);
+								} catch (Exception ex) {
+								}
+						}
+						
+					}
+				}).start();
+            	new Thread(new  Runnable() {
+					public void run() {
+						String secret = "1234";
+						String answer = JOptionPane.showInputDialog("암호를 대시오");
+						if(secret.equals(answer)) {
+							inputChk = true;
+						}
+					}
+            	}).start();
 
 				// 2- 입력값을 받아서 JTextArea에 붙이는 작업 
 					

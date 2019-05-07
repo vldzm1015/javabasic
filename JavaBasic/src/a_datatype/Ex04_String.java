@@ -3,7 +3,8 @@ package a_datatype;
 public class Ex04_String {
 
    public static void main(String[] args) {
-      String a ;
+	// 1. 변수선언 -> 값 대입
+	   String a ; 
       a = new String("홍길동");
             
       String b = new String("홍길동");

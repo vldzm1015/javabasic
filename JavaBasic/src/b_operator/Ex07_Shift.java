@@ -13,10 +13,14 @@ public class Ex07_Shift {
 
 		int a = -4 , b = 5;
 		System.out.println(a>>2);
+		// 111100 >> 2칸이동 001111 = -1
 		System.out.println(a<<1);
+		// 111100 << 1칸이동 111000 = -8
 		System.out.println(a>>>2);
+		// 111100 <<< 2칸이동 110000 = 1072741823
 		System.out.println(b>>2);
+		// 00000101 >> 2칸이동 00000001 = 1
 		System.out.println(b<<1);
-	}
+	} // 00000101 << 1칸이동 00001010 = 10
 
 }

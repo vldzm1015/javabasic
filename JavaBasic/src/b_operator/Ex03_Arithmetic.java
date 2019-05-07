@@ -13,9 +13,10 @@ public class Ex03_Arithmetic {
 		Scanner input  =  new Scanner(System.in);
 		System.out.println("숫자를 입력하시오");
 		int sum = input.nextInt();
+		// sum 을 2로 나눠서 0이되면 짝수 
 		if ( sum % 2 == 0 ) {
 			System.out.println("짝수");
-		} else {
+		} else { //아닐경우 홀수
 			System.out.println("홀수");
 		}
 	}
