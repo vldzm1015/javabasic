@@ -35,7 +35,7 @@ public class ChatServer implements Runnable {
 
 
 class ChatService extends Thread {
-		String myname = "quest";
+		String myname = "guest";
 		BufferedReader in;
 		OutputStream out;
 		ChatService( Socket s ) {

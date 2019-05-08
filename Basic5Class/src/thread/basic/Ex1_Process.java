@@ -2,7 +2,7 @@ package thread.basic;
 
 import java.io.IOException;
 
-public class Ex01_Process {
+public class Ex1_Process {
 
 	public static void main(String[] args) {
 		//다른 응용 프로그램을 프로세스 실행

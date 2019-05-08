@@ -1,6 +1,6 @@
 package thread.basic;
 
-public class Ex02_ThreadTest2 {
+public class Ex2_ThreadTest2 {
 
 	public static void main(String[] args) {
 		MakeCar2 mc1 = new  MakeCar2("차를 만들기");
