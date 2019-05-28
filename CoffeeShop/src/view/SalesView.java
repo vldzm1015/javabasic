@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,49 +15,46 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
-import model.vo.Inventory;
 import model.dao.SalesModel;
 
 
 
-
 public class SalesView extends JPanel {
-	JTextField tfPayTel, tfPayCustName, tfPayIvNum;
+
+	JTextField tfSalNum, tfPayIvNum, tfReturnTotal, tfInsertCount;
+
 	JButton bPay, bReturn, bCancel;
-	JButton  bAmeri, bRatte, bBaRa, bChoRa, bGrRa, bMiRa, bCheese, bTira, bHonny, 
-	bCooCho, bCooBu, bSan;
-	JTextField tfReturnTotal;
 
-	JTextField	tfInsertCount;
-
-	JTable		tableSales; //VIEW 역할
-
-	//	JTable tableSalesList;
+	JTable      tableSales; //VIEW 역할
 
 	SalesTableModel salesTM;
+
 	SalesModel db;
-	
+
 	// 메뉴버튼 배열
 	JButton [] bMenu = new JButton[12];
 	// 메뉴명 배열
-	String [] strMenu = {"아메리카노","카페라떼", "바닐라라떼", "초코라뗴", "녹차라떼",
+	String [] strMenu = {"아메리카노","카페라떼", "바닐라라떼", "초코라떼", "녹차라떼",
 			"밀크티"," 치즈케이크", "티라미수", "허니브래드", "초코쿠키", "버터쿠키", "샌드위치"};
 	// 메뉴 가격 배열
 	int [] priceMenu = {1500, 2000, 2500, 2500, 2500, 3000, 5000,
 			5000, 6000, 2000, 2000, 6000};
-	
+
 	// 메뉴선택 메뉴명 저장하는 변수
 	int selected;
 
+	int total=0;
+	String result= "";
+
 
 	//==============================================
-	//	 생성자 함수
+	//    생성자 함수
 	public SalesView(){
-		addLayout();	//화면구성
-		eventProc();	//DB연결
+		addLayout();   //화면구성
+		eventProc();   //DB연결
 		connectDB();
 
-		//		selectNonReturn();
+		//      selectNonReturn();
 	}
 
 	// DB 연결
@@ -72,71 +70,103 @@ public class SalesView extends JPanel {
 	// 이벤트 등록
 	public void eventProc(){
 		ActionHandler ah = new ActionHandler();
-		tfPayTel.addActionListener(ah);
+		//		tfReturnTotal.addActionListener(ah);
 		bPay.addActionListener(ah);
 		bReturn.addActionListener(ah);
 		bCancel.addActionListener(ah);
-		
+
 
 		ButtonEventHandler hdlr = new ButtonEventHandler();
-//		bAmeri.addActionListener(hdlr);
-//		bRatte.addActionListener(hdlr);
-//		bBaRa.addActionListener(hdlr);
-//		bChoRa.addActionListener(hdlr);
-//		bGrRa.addActionListener(hdlr);
-//		bMiRa.addActionListener(hdlr);
-//		bCheese.addActionListener(hdlr);
-//		bTira.addActionListener(hdlr);
-//		bHonny.addActionListener(hdlr);
-//		bCooCho.addActionListener(hdlr);
-//		bCooBu.addActionListener(hdlr);
-//		bSan.addActionListener(hdlr);
 		for(int i=0; i<bMenu.length; i++) {
 			bMenu[i].addActionListener(hdlr);
 		}
-		
+
 		tfInsertCount.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
+				int price = (priceMenu[selected])*(Integer.parseInt(tfInsertCount.getText()));
 				
 				ArrayList data = new ArrayList();
 				data.add(strMenu[selected]);
 				data.add(Integer.parseInt(tfInsertCount.getText()));
-				data.add(priceMenu[selected]);
+				data.add(price);
 				
-				salesTM.data.add(data);
-				salesTM.fireTableDataChanged();
-				
+				ArrayList exData = salesTM.data;
+
+				// true / false 변수 잡아주기
+				boolean flag = false;
+
+				// 반복문 구동 exData.size() 
+				for (int i = 0; i <  exData.size(); i++) {
+					// ArrayList temp 와  exData.get(i) 가 같다
+					ArrayList temp = (ArrayList) exData.get(i);
+
+					// temp.get(0)와 strMenu[selected] 같다면
+					String  tempMenuName =(String) temp.get(0);
+					System.out.println(tempMenuName + " /" +strMenu[selected] );
+
+					if (tempMenuName.equals (strMenu[selected])) {
+						// 메뉴의 이름이 같을 때
+						flag = true;
+						//   예전의 카운트는 temp (1) 저장
+						int exCnt =  (int) temp.get(1);
+
+						// 예전 가격은 temp(2) 저장
+						int exPrice = (int)temp.get(2);
+
+						//  새로운 개수는 예전 개수 + 이번개수
+						int calCal = exCnt + Integer.parseInt(tfInsertCount.getText());
+
+						// temp (1) 번 값으로 새로운개수 지정
+						temp.set(1, calCal);
+
+						// temp (2)번 값으로 새로운 개수와 예전 가격 곱하기
+						temp.set(2, calCal  *price);
+
+						salesTM.fireTableDataChanged();
+						getSum();
+					}
+
+				}
+				// flag가 fasle 라면	
+				if( flag == false) {
+					// data 추가
+					salesTM.data.add(data);
+					salesTM.fireTableDataChanged();
+					getSum();
+				}
 			}
 		});
-
 
 	}
 	// 액션이벤트 핸들러 만들기
 	class ActionHandler implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("이벤트");
+			//System.out.println("이벤트");
 			Object evt = e.getSource();
+			// 취소
 			if (evt == bCancel) {
-				//				selectCustName();
+				coffecancle();
+				// 결제
 			} else if (evt == bPay) {
 				coffePay();
-				//				selectNonReturn();
+				// 환불
 			} else if(evt == bReturn) {
-//				returnVideo();
-				//				selectNonReturn();
+				coffereturn();
+				// 메뉴고르기
 			} else if (evt == tfInsertCount) {
-				coffePay();
-				//				selectNonReturn();
+				selectItem();
+				getSum();
 			} 
 
 		}
 	}
-	
-	
+
+
+	//
 	class ButtonEventHandler implements ActionListener{
 		public void actionPerformed(ActionEvent ev){
- 			JButton evt =(JButton) ev.getSource();
+			JButton evt =(JButton) ev.getSource();
 			// System.out.println("이벤트:" + evt.getText());
 			for( int i=0; i< bMenu.length; i++) {
 				if( evt == bMenu[i]) selected= i;
@@ -145,77 +175,100 @@ public class SalesView extends JPanel {
 
 
 	}
-	
 
-	//전화 입력 후 엔터치면 고객명을 출력하는 메소드
-	public void selectCustName() {
-			
+
+	// 수량입력 시 처리하는 메소드
+	public int selectItem() {
+		//1.화면에서 필요한 정보를 얻어오기
+		int vnum = Integer.parseInt(tfPayIvNum.getText());
+		int total = Integer.parseInt(tfPayIvNum.getText());
+		
+		return 0;
+	}
+	public void getSum()
+	{
+
+		int sum = 0;
+
+		for(int i = 0; i < tableSales.getRowCount(); i++)
+
+		{
+//			String a =((String)(tableSales.getValueAt(i, 2))).replaceAll("[^0-9]", "");
+			sum = sum + (Integer)(salesTM.getValueAt(i, 2));
+
+		}
+		System.out.println(sum);
+		tfReturnTotal.setText(Integer.toString(sum));
+
+	}
+
+	// 취소 시 처리하는 메소드
+	public void coffecancle() {
+
+		salesTM.data = new ArrayList();
+		salesTM.fireTableDataChanged();
+		clearTextField();
+	
 	}
 	
-	// 수량입력 시 처리하는 메소드
-		public int selectItem(String Pname,  int Price, int PCount) {
-			//1.화면에서 필요한 정보를 얻어오기
-				
-   
-//			Price = 
-////			PCount = ;
-			
-			int vnum = Integer.parseInt(tfPayIvNum.getText());
-			
-			
-			return 0;
-		}
-		
+
 	// 결제 시 처리하는 메소드
 	public void coffePay() {
-		//1.화면에서 필요한 정보를 얻어오기
-		//2.모델쪽 메소드 호출
-		//3. 대여 후 결과처리
-		String tel = tfInsertCount.getText();
-		int vnum = Integer.parseInt(tfPayIvNum.getText());
-		int Ivnum = Integer.parseInt(tfReturnTotal.getText());
 		
+		try {
+			db.coffePay(salesTM.data);
+//			salesTM.data = new ArrayList();
+//			salesTM.fireTableDataChanged();
+			clearTextField();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return;
+	}
+
+	//  환불 시 처리하는 메소드
+	public void coffereturn() {
+	
+		try {
+			db.coffePay(salesTM.data);
+			clearTextField();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return;
 	}
 	
+	void clearTextField() {
+		tfPayIvNum.setText(null);
+		tfInsertCount.setText("1");
+		tfReturnTotal.setText(null);
+	}
 
-
-
-
-	//	화면 구성********************************************
+	//   화면 구성********************************************
 	void addLayout(){
 		// 멤버변수 객체 생성
-		tfPayTel = new JTextField(20);
-		tfPayCustName = new JTextField(20);
 		tfPayIvNum = new JTextField(20);
 		tfReturnTotal = new JTextField(10);
 
 		bPay = new JButton("결제");
 		bCancel = new JButton("취소");
 		bReturn = new JButton("환불");
-		
-//		bAmeri = new JButton("아메리카노");
-//		bRatte = new JButton("카페라떼");
-//		bBaRa = new JButton("바닐라라떼");
-//		bChoRa = new JButton("초코라뗴");
-//		bGrRa = new JButton("녹차라떼");
-//		bMiRa = new JButton("밀크티");
-//		bCheese = new JButton("치즈케이크");
-//		bTira = new JButton("티라미수");
-//		bHonny = new JButton("허니브래드");
-//		bCooCho = new JButton("초코쿠키");
-//		bCooBu = new JButton("버터쿠키");
-//		bSan = new JButton("샌드위치");
+
 		for(int i =0; i<bMenu.length; i++)
 		{
 			bMenu[i] = new JButton(strMenu[i]);
 		}
 		tfInsertCount = new JTextField("1",5);
-		
-		
+
+
 
 		tableSales = new JTable();
 		salesTM = new SalesTableModel();
 		tableSales = new JTable(salesTM);
+
 
 		// ************* 화면구성 *****************
 
@@ -225,20 +278,9 @@ public class SalesView extends JPanel {
 
 		//왼쪽 - 메인
 		JPanel p_west_center = new JPanel();
-		p_west_center.setBorder(new TitledBorder("선		택"));
+		p_west_center.setBorder(new TitledBorder("선      택"));
 		p_west_center.setLayout(new GridLayout(4,4));
-//		p_west_center.add(new JButton("아메리카노"));
-//		p_west_center.add(new JButton("카페라떼"));
-//		p_west_center.add(new JButton("바닐라라떼"));
-//		p_west_center.add(new JButton("초코라떼"));
-//		p_west_center.add(new JButton("녹차라떼"));
-//		p_west_center.add(new JButton("밀크티"));
-//		p_west_center.add(new JButton("치즈케이크"));
-//		p_west_center.add(new JButton("티라미수"));
-//		p_west_center.add(new JButton("허니브래드"));
-//		p_west_center.add(new JButton("초코쿠기"));
-//		p_west_center.add(new JButton("버터쿠키"));
-//		p_west_center.add(new JButton("샌드위치"));
+
 		for(int i =0; i<bMenu.length; i++)
 		{
 			p_west_center.add(bMenu[i]);
@@ -246,7 +288,7 @@ public class SalesView extends JPanel {
 
 
 		// 화면 왼쪽 아래
-		JPanel p_west_south = new JPanel();	
+		JPanel p_west_south = new JPanel();   
 		p_west_south.setBorder(new TitledBorder("개수를 선택하시오"));
 		p_west.add(p_west_south,BorderLayout.SOUTH);
 		p_west_south.add(new JLabel("수량"));
@@ -265,20 +307,20 @@ public class SalesView extends JPanel {
 		p_east.setLayout(new BorderLayout());
 
 		// 화면 오른쪽 위에
-		JPanel p_east_north = new JPanel();	
+		JPanel p_east_north = new JPanel();   
 		p_east.add(p_east_north,BorderLayout.NORTH);
 		p_east.add(new JScrollPane(tableSales),BorderLayout.CENTER);
 
 
 		// 화면 오른쪽 아래
-		JPanel p_east_south = new JPanel();	
+		JPanel p_east_south = new JPanel();   
 		p_east.add(p_east_south,BorderLayout.SOUTH);
 		p_east_south.add(new JLabel("TOTAL"));
 		p_east_south.add(tfReturnTotal);
 		p_east_south.add(bPay);
 		p_east_south.add(bCancel);
 		p_east_south.add(bReturn);
-		
+
 
 		//전체영역에 붙이기
 		setLayout(new GridLayout(1,2));
@@ -287,7 +329,7 @@ public class SalesView extends JPanel {
 
 	}
 
-	class SalesTableModel extends AbstractTableModel { 
+	static class SalesTableModel extends AbstractTableModel { 
 
 		ArrayList data = new ArrayList();
 		String [] columnNames = {"상품명","상품개수","가격"};
@@ -301,6 +343,11 @@ public class SalesView extends JPanel {
 		public int getColumnCount() { 
 			return columnNames.length; 
 		} 
+
+		public void setNumRows(int i) {
+			// TODO Auto-generated method stub
+			
+		}
 
 		public int getRowCount() { 
 			return data.size(); 
@@ -316,17 +363,6 @@ public class SalesView extends JPanel {
 		}
 
 	}
-
-	//미납목록 출력하는 메소드
-	//	public void selectNonReturn() {
-	//
-	//		try {
-	//			rentTM.data=db.selectList();
-	//			rentTM.fireTableDataChanged();
-	//		}catch(Exception ex){
-	//			System.out.println(ex.getMessage());
-	//		}
-	//	}
+	
 }
-
 

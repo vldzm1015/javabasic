@@ -2,51 +2,35 @@ package model.vo;
 
 public class Inventory {
 	
-	int videoNo;					// 비디오번호
-	String genre;				// 장르
-	String videoName;			// 비디오명
-	String director;				// 감독
-	String actor;					// 배우
-	String exp;					// 설명
-public Inventory() {
-		
-	}
+	int inventoryNo;					// 인벤토리번호
+	String inventoryPname;			// 인벤토리명
+	int price;				// 가격
+	String exdate;					// 유통기한
 	
-	public int getVideoNo() {
-		return videoNo;
+	
+	public int getInventoryNo() {
+		return inventoryNo;
 	}
-	public void setVideoNo(int videoNo) {
-		this.videoNo = videoNo;
+	public void setInventoryNo(int inventoryNo) {
+		this.inventoryNo = inventoryNo;
 	}
-	public String getGenre() {
-		return genre;
+	public String getInventoryPname() {
+		return inventoryPname;
 	}
-	public void setGenre(String genre) {
-		this.genre = genre;
+	public void setInventoryPname(String inventoryPname) {
+		this.inventoryPname = inventoryPname;
 	}
-	public String getVideoName() {
-		return videoName;
+	public int getPrice() {
+		return price;
 	}
-	public void setVideoName(String videoName) {
-		this.videoName = videoName;
+	public void setPrice(int price) {
+		this.price = price;
 	}
-	public String getDirector() {
-		return director;
+	public String getExdate() {
+		return exdate;
 	}
-	public void setDirector(String director) {
-		this.director = director;
-	}
-	public String getActor() {
-		return actor;
-	}
-	public void setActor(String actor) {
-		this.actor = actor;
-	}
-	public String getExp() {
-		return exp;
-	}
-	public void setExp(String exp) {
-		this.exp = exp;
+	public void setExdate(String exdate) {
+		this.exdate = exdate;
 	}
 	
 	

@@ -28,24 +28,24 @@ import model.vo.Inventory;
 public class InventoryView extends JPanel 
 {	
 	//	member field
-	JTextField	tfVideoNum, tfVideoTitle, tfVideoDirector, tfVideoActor;
-	JComboBox	comVideoJanre;
-//	JTextArea	taVideoContent;
+	JTextField	tfInventoryIvnum, tfInventoryPname, tfInventoryPrice, tfInventoryExdate;
+	JComboBox	comInventoryPname;
+//	JTextArea	taInventoryContent;
 
 	JCheckBox	cbMultiInsert;
 	JTextField	tfInsertCount;
 
-	JButton		bVideoInsert, bVideoModify, bVideoDelete;
+	JButton		bInventoryInsert, bInventoryModify, bInventoryDelete;
 
-	JComboBox	comVideoSearch;
-	JTextField	tfVideoSearch;
-	JTable		tableVideo; //VIEW 역할
-	JTable 		tableVideoU;
-	JTable 		tableVideoD;
+	JComboBox	comInventorySearch;
+	JTextField	tfInventorySearch;
+	JTable		tableInventory; //VIEW 역할
+	JTable 		tableInventoryU;
+	JTable 		tableInventoryD;
 	
-	VideoTableModel tbModelVideo; //MODEL 역할
-	VideoTableModelU tbModelVideoU; //MODEL 역할
-	VideoTableModelD tbModelVideoD; //MODEL 역할
+	InventoryTableModel tbModelInventory; //MODEL 역할
+	InventoryTableModelU tbModelInventoryU; //MODEL 역할
+	InventoryTableModelD tbModelInventoryD; //MODEL 역할
 	
 	//비지니스 로직 = 모델 클래스 변수 선언
 	InventoryModel db;
@@ -73,10 +73,10 @@ public class InventoryView extends JPanel
 	
 	public void eventProc(){
 		ButtonEventHandler hdlr = new ButtonEventHandler();
-		bVideoInsert.addActionListener(hdlr);
-		bVideoModify.addActionListener(hdlr);
-		bVideoDelete.addActionListener(hdlr);
-		tfVideoSearch.addActionListener(hdlr);
+		bInventoryInsert.addActionListener(hdlr);
+		bInventoryModify.addActionListener(hdlr);
+		bInventoryDelete.addActionListener(hdlr);
+		tfInventorySearch.addActionListener(hdlr);
 		cbMultiInsert.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
@@ -85,29 +85,30 @@ public class InventoryView extends JPanel
 			}
 		});
 		
-		//JTable 비디오 검색에서 클릭 했을 때
-		tableVideo.addMouseListener(new MouseAdapter() {
+		//JTable 인벤토리 검색에서 클릭 했을 때
+		
+		tableInventory.addMouseListener(new MouseAdapter() {
 			
 			public void mouseClicked(MouseEvent e) {
 				int col = 0;
-				int row = tableVideo.getSelectedRow();
-				int vNum = (Integer)tableVideo.getValueAt(row, col);
+				int row = tableInventory.getSelectedRow();
+				int vNum = (Integer)tableInventory.getValueAt(row, col);
 				//JOptionPane.showMessageDialog(null, vNum);
 				
-				//1.선택한 비디오 번호를 모델단의 selectByPK() 호출 시 인자로 보내기
-				//2. 넘겨 받은 Video 에서 해당 값들 화면 출력하기
+				//1.선택한 인벤토리 번호를 모델단의 selectByPK() 호출 시 인자로 보내기
+				//2. 넘겨 받은 Inventory 에서 해당 값들 화면 출력하기
 				try {
 					Inventory vo = db.selectByPK(vNum);
-					tfVideoNum.setText(String.valueOf(vo.getVideoNo()));
-					tfVideoTitle.setText(vo.getVideoName());
-					tfVideoDirector.setText(vo.getDirector());
-					tfVideoActor.setText(vo.getActor());
-//					taVideoContent.setText(vo.getExp());
-					comVideoJanre.setSelectedItem(vo.getGenre());
+					tfInventoryIvnum.setText(String.valueOf(vo.getInventoryNo()));
+//					tfInventoryPname.setText(vo.getInventoryPname());
+					tfInventoryPrice.setText(String.valueOf(vo.getPrice()));
+					tfInventoryExdate.setText(vo.getExdate());
+//					taInventoryContent.setText(vo.getExp());
+					comInventoryPname.setSelectedItem(vo.getInventoryPname());
 					
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
-					System.out.println("video 정보 출력 실패");
+					System.out.println("Inventory 정보 출력 실패");
 					e1.getMessage();
 					e1.printStackTrace();
 				}
@@ -121,38 +122,38 @@ public class InventoryView extends JPanel
 		public void actionPerformed(ActionEvent ev){
 			Object o = ev.getSource();
 			
-			if(o==bVideoInsert){  
-				registVideo();					// 비디오 등록
+			if(o==bInventoryInsert){  
+				registInventory();					// 인벤토리 등록
 			}
-			else if(o==bVideoModify){  
-				modifyVideo();					// 비디오 정보 수정
+			else if(o==bInventoryModify){  
+				modifyInventory();					// 인벤토리 정보 수정
 			}
-			else if(o==bVideoDelete){  
-				deleteVideo();					// 비디오 정보 삭제
+			else if(o==bInventoryDelete){  
+				deleteInventory();					// 인벤토리 정보 삭제
 			}
-			else if(o==tfVideoSearch){
-				searchVideo();					// 비디오 검색
+			else if(o==tfInventorySearch){
+				searchInventory();					// 인벤토리 검색
 			}
 		}
 	}
 	
-	// 입고 클릭시  - 비디오 정보 등록
-	public void registVideo(){
+	// 입고 클릭시  - 인벤토리 정보 등록
+	public void registInventory(){
 		 //JOptionPane.showMessageDialog(null, "입고");
 		//1.화면의 입력 및 선택 값들 얻어오기-->vo 객체로 생성
 		Inventory vo = new Inventory();
-		vo.setVideoName(tfVideoTitle.getText());
-		vo.setDirector(tfVideoActor.getText());
-		vo.setActor(tfVideoActor.getText());
-		vo.setGenre((String)comVideoJanre.getSelectedItem());
-//		vo.setExp(taVideoContent.getText());
+		vo.setInventoryPname(tfInventoryPname.getText());
+		vo.setPrice(Integer.parseInt(tfInventoryPrice.getText()));
+		vo.setExdate(tfInventoryExdate.getText());
+		vo.setInventoryPname((String)comInventoryPname.getSelectedItem());
+//		vo.setExp(taInventoryContent.getText());
 		
 		int count = Integer.parseInt(tfInsertCount.getText());
 		//2.모델단의 메소드 1번 값들 전송
 		try {
-			db.insertVideo(vo, count);
+			db.insertInventory(vo, count);
 			clearTextField();
-			searchVideo();
+			searchInventory();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -160,28 +161,27 @@ public class InventoryView extends JPanel
 	}
 	
 	public void initStyle(){   // 입력하지 못하게 만듬.
-		tfVideoNum.setEditable(false);
+		tfInventoryIvnum.setEditable(false);
 		tfInsertCount.setEditable(false);		
 		tfInsertCount.setHorizontalAlignment(JTextField.RIGHT);
 	}
 	
-	// 수정 클릭시 - 비디오 정보 수정
-	public void modifyVideo(){
+	// 수정 클릭시 - 인벤토리 정보 수정
+	public void modifyInventory(){
 
 //		JOptionPane.showMessageDialog(null, "수정");
 		Inventory vo = new Inventory();
-		vo.setVideoNo(Integer.parseInt(tfVideoNum.getText()));
-		vo.setVideoName(tfVideoTitle.getText());
-		vo.setDirector(tfVideoActor.getText());
-		vo.setActor(tfVideoActor.getText());
-		vo.setGenre((String)comVideoJanre.getSelectedItem());
-//		vo.setExp(taVideoContent.getText());
+		vo.setInventoryNo(Integer.parseInt(tfInventoryIvnum.getText()));
+//		vo.setInventoryPname(tfInventoryPname.getText());
+		vo.setExdate(tfInventoryExdate.getText());
+		vo.setInventoryPname((String)comInventoryPname.getSelectedItem());
+//		vo.setExp(taInventoryContent.getText());
 		
 		//2.모델단의 메소드 1번 값들 전송
 		try {
-			db.modifyVideo(vo);
+			db.modifyInventory(vo);
 			clearTextField();
-			searchVideo();
+			searchInventory();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -189,38 +189,38 @@ public class InventoryView extends JPanel
 
 	}
 	void clearTextField() {
-		tfVideoNum.setText(null);
-		tfVideoDirector.setText(null);
-		tfVideoTitle.setText(null);
-		tfVideoActor.setText(null);
-//		taVideoContent.setText(null);
+		tfInventoryIvnum.setText(null);
+		tfInventoryPrice.setText(null);
+		tfInventoryPname.setText(null);
+		tfInventoryExdate.setText(null);
+//		taInventoryContent.setText(null);
 	}
 	
-	// 삭제 클릭시 - 비디오 정보 삭제
-	public void deleteVideo(){
+	// 삭제 클릭시 - 인벤토리 정보 삭제
+	public void deleteInventory(){
 		
 //		JOptionPane.showMessageDialog(null, "삭제");
-		//tfVideoNum.setEditable(true);
-		String vnum = tfVideoNum.getText();
+		//tfInventoryNum.setEditable(true);
+		String vnum = tfInventoryIvnum.getText();
 		//int count = Integer.parseInt(tfInsertCount.getText());
 		try {
-			db.deleteVideo(vnum);
+			db.deleteInventory(vnum);
 			clearTextField();
-			searchVideo();
+			searchInventory();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	// 비디오현황검색
-		public void searchVideo(){
+	// 인벤토리현황검색
+		public void searchInventory(){
 //			JOptionPane.showMessageDialog(null, "검색");
-			int sel = comVideoSearch.getSelectedIndex();
-			String word = tfVideoSearch.getText();
+			int sel = comInventorySearch.getSelectedIndex();
+			String word = tfInventorySearch.getText();
 			try {
-				tbModelVideo.data = db.searchVideo(sel, word);
-				tbModelVideo.fireTableDataChanged();
+				tbModelInventory.data = db.searchInventory(sel, word);
+				tbModelInventory.fireTableDataChanged();
 			} catch (Exception e) {
 				System.out.println("검색실패:"+e.getMessage());
 			}
@@ -231,9 +231,10 @@ public class InventoryView extends JPanel
 		// 모델단 함수를 호출하여 DB 값 가져옴
 		// 화면 JTableModel의 data 로 지정
 		// fireXXXX
+		
 		try {
-			tbModelVideoU.data = db.shortInP();
-			tbModelVideoU.fireTableDataChanged();
+			tbModelInventoryU.data = db.shortInP();
+			tbModelInventoryU.fireTableDataChanged();
 		} catch (Exception e) {
 			System.out.println("검색실패:"+e.getMessage());
 		}
@@ -245,8 +246,8 @@ public class InventoryView extends JPanel
 		// 화면 JTableModel의 data 로 지정
 		// fireXXXX
 		try {
-			tbModelVideoD.data = db.shortInP();
-			tbModelVideoD.fireTableDataChanged();
+			tbModelInventoryD.data = db.comeExdate();
+			tbModelInventoryD.fireTableDataChanged();
 		} catch (Exception e) {
 			System.out.println("검색실패:"+e.getMessage());
 		}
@@ -255,32 +256,33 @@ public class InventoryView extends JPanel
 	//  화면설계 메소드
 	public void addLayout(){
 		//멤버변수의 객체 생성
-		tfVideoNum = new JTextField();
-		tfVideoTitle = new JTextField();
-		tfVideoDirector = new JTextField();
-		tfVideoActor = new JTextField();
+		tfInventoryIvnum = new JTextField();
+		tfInventoryPname = new JTextField();
+		tfInventoryPrice = new JTextField();
+		tfInventoryExdate = new JTextField();
 		
-		String []cbJanreStr = {"아메리카노","카페라떼","에스프레소","치즈케이크"};
-		comVideoJanre = new JComboBox(cbJanreStr);
-//		taVideoContent = new JTextArea();
+		String []cbJanreStr = {"아메리카노","카페라떼", "바닐라라떼", "초코라떼", "녹차라떼",
+		         "밀크티"," 치즈케이크", "티라미수", "허니브래드", "초코쿠키", "버터쿠키", "샌드위치"};
+		comInventoryPname = new JComboBox(cbJanreStr);
+//		taInventoryContent = new JTextArea();
 		
 		cbMultiInsert = new JCheckBox("입고수량");
 		tfInsertCount = new JTextField("1",5);
 	
-		bVideoInsert = new JButton("입고");
-		bVideoModify = new JButton("수정");
-		bVideoDelete = new JButton("삭제");
+		bInventoryInsert = new JButton("입고");
+		bInventoryModify = new JButton("수정");
+		bInventoryDelete = new JButton("삭제");
 		
-		String []cbVideoSearch = {"상품명","유통기한"};
-		comVideoSearch = new JComboBox(cbVideoSearch);
-		tfVideoSearch = new JTextField(15);
+		String []cbInventorySearch = {"상품명","가격"};
+		comInventorySearch = new JComboBox(cbInventorySearch);
+		tfInventorySearch = new JTextField(15);
 		
-		tbModelVideo = new VideoTableModel();
-		tbModelVideoU = new VideoTableModelU();
-		tbModelVideoD = new VideoTableModelD();
-		tableVideo = new JTable(tbModelVideo);
-		tableVideoU = new JTable(tbModelVideoU);
-		tableVideoD = new JTable(tbModelVideoD);
+		tbModelInventory = new InventoryTableModel();
+		tbModelInventoryU = new InventoryTableModelU();
+		tbModelInventoryD = new InventoryTableModelD();
+		tableInventory = new JTable(tbModelInventory);
+		tableInventoryU = new JTable(tbModelInventoryU);
+		tableInventoryD = new JTable(tbModelInventoryD);
 
 		//*********************************************************************
 		// 화면 구성
@@ -296,26 +298,26 @@ public class InventoryView extends JPanel
 		//왼쪽 - 메인 - 중앙
 		JPanel p_west_c_c = new JPanel();
 		p_west_c_c.setBorder(new TitledBorder("재고 관리"));
-		//비디오 정보 입력 부분
+		//인벤토리 정보 입력 부분
 		JPanel p_w_c_c_1 = new JPanel();
 		 p_w_c_c_1.setLayout(new GridLayout(4,1));
          p_w_c_c_1.add(new JLabel("재고번호"));
-         p_w_c_c_1.add(tfVideoNum);
+         p_w_c_c_1.add(tfInventoryIvnum);
          p_w_c_c_1.add(new JLabel("상품명"));
-         p_w_c_c_1.add(comVideoJanre);
+         p_w_c_c_1.add(comInventoryPname);
 //         p_w_c_c_1.add(new JLabel("제목"));
-//         p_w_c_c_1.add(tfVideoTitle);
+//         p_w_c_c_1.add(tfInventoryTitle);
          p_w_c_c_1.add(new JLabel("가격"));
-         p_w_c_c_1.add(tfVideoDirector);
+         p_w_c_c_1.add(tfInventoryPrice);
          p_w_c_c_1.add(new JLabel("유통기한"));
-         p_w_c_c_1.add(tfVideoActor);
+         p_w_c_c_1.add(tfInventoryExdate);
 
 		
-		//비디오 설명 부분
+		//인벤토리 설명 부분
 //		JPanel p_w_c_c_2 = new JPanel();
 //		p_w_c_c_2.setLayout(new BorderLayout());
 //		p_w_c_c_2.add(new JLabel("설명"), BorderLayout.WEST);
-//		p_w_c_c_2.add(taVideoContent, BorderLayout.CENTER);
+//		p_w_c_c_2.add(taInventoryContent, BorderLayout.CENTER);
 		
 		
 //		p_west_c_c.setLayout(new GridLayout(2,1));
@@ -336,9 +338,9 @@ public class InventoryView extends JPanel
 		//왼쪽 - 버튼
 		JPanel p_west_south = new JPanel();
 		p_west_south.setLayout(new GridLayout(1,3));
-		p_west_south.add(bVideoInsert);
-		p_west_south.add(bVideoModify);
-		p_west_south.add(bVideoDelete);
+		p_west_south.add(bInventoryInsert);
+		p_west_south.add(bInventoryModify);
+		p_west_south.add(bInventoryDelete);
 		p_west.add(p_west_south, BorderLayout.SOUTH);
 		
 		
@@ -350,11 +352,11 @@ public class InventoryView extends JPanel
 		p_east_bottom.setLayout(new BorderLayout());
 		
 		JPanel p_east_b_south = new JPanel();
-		p_east_b_south.add(comVideoSearch);
-		p_east_b_south.add(tfVideoSearch);
+		p_east_b_south.add(comInventorySearch);
+		p_east_b_south.add(tfInventorySearch);
 		
 		p_east_bottom.add(p_east_b_south,BorderLayout.NORTH);
-		p_east_bottom.add(new JScrollPane(tableVideo),BorderLayout.CENTER);
+		p_east_bottom.add(new JScrollPane(tableInventory),BorderLayout.CENTER);
 		
 		JPanel p_east_upper = new JPanel();
 		p_east_upper.setLayout(new GridLayout(2,1));
@@ -363,12 +365,12 @@ public class InventoryView extends JPanel
 		JPanel p_east_upper_u = new JPanel();
 		p_east_upper_u.setLayout(new BorderLayout());
 		p_east_upper_u.setBorder(new TitledBorder("재고 부족 상품"));
-		p_east_upper_u.add(new JScrollPane(tableVideoU),BorderLayout.CENTER);
+		p_east_upper_u.add(new JScrollPane(tableInventoryU),BorderLayout.CENTER);
 		
 		JPanel p_east_upper_b = new JPanel();
 		p_east_upper_b.setLayout(new BorderLayout());
 		p_east_upper_b.setBorder(new TitledBorder("유통기한 임박 상품"));
-		p_east_upper_b.add(new JScrollPane(tableVideoD),BorderLayout.CENTER);
+		p_east_upper_b.add(new JScrollPane(tableInventoryD),BorderLayout.CENTER);
 		
 		
 		p_east_upper.add(p_east_upper_u);
@@ -389,7 +391,7 @@ public class InventoryView extends JPanel
 	}
 	
 	//화면에 테이블 붙이는 메소드 
-	class VideoTableModel extends AbstractTableModel { 
+	class InventoryTableModel extends AbstractTableModel { 
 		  
 		ArrayList data = new ArrayList();
 		String [] columnNames = {"재고번호","상품명","가격","유통기한"};
@@ -418,10 +420,10 @@ public class InventoryView extends JPanel
 		    }
 	}
 	//화면에 테이블 붙이는 메소드 
-	class VideoTableModelU extends AbstractTableModel { 
+	class InventoryTableModelU extends AbstractTableModel { 
 			  
 			ArrayList data = new ArrayList();
-			String [] columnNames = {"재고번호","상품명","개수"};
+			String [] columnNames = {"상품명","개수"};
 
 			//=============================================================
 			// 1. 기본적인 TabelModel  만들기
@@ -447,10 +449,10 @@ public class InventoryView extends JPanel
 			    }
 		}
 	//화면에 테이블 붙이는 메소드 
-	class VideoTableModelD extends AbstractTableModel { 
+	class InventoryTableModelD extends AbstractTableModel { 
 			  
 			ArrayList data = new ArrayList();
-			String [] columnNames = {"재고번호","상품명","유통기한"};
+			String [] columnNames = {"재고번호","상품명","남은일수"};
 
 			//=============================================================
 			// 1. 기본적인 TabelModel  만들기

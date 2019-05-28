@@ -21,6 +21,7 @@ import model.dao.SalesModel;
 import view.SalesView.SalesTableModel;
 
 
+
 public class ProfitView extends JPanel {
 	
 	JTable		tableProfit; //VIEW 역할
@@ -36,7 +37,7 @@ public class ProfitView extends JPanel {
 
 	// 이벤트 등록
 		public void eventProc(){
-		// TODO Auto-generated method stub
+		
 		
 	}
 
@@ -46,7 +47,7 @@ public class ProfitView extends JPanel {
 		try {
 			db = new SalesModel();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+		
 			e.printStackTrace();
 		}
 	}

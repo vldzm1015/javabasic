@@ -26,19 +26,17 @@ public class InventoryModel implements InventoryDao{
 
 	}
 
-	public void insertVideo(Inventory vo, int count) throws Exception{
+	public void insertInventory(Inventory vo, int count) throws Exception{
 		// 2. Connection 연결객체 얻어오기
 		Connection con = DriverManager.getConnection(url, user, pass);
 		// 3. sql 문장 만들기
-		String sql = "INSERT INTO VIDEO(V_NUM,TITLE,GENR,DIR,ACTOR,DIS) "
-				+ "  VALUES(seq_video_num.nextval,?,?,?,?,?)";
+		String sql = "INSERT INTO Inventory(IVNUM,PNAME,PRICE,EXDATE) "
+				+ "  VALUES(SEQ_IVNUM.nextval,?,?,?)";
 		// 4. sql 전송객체 (PreparedStatement)	
 		PreparedStatement st = con.prepareStatement(sql);
-		st.setString(1,vo.getVideoName());	 
-		st.setString(2,vo.getGenre());
-		st.setString(3,vo.getDirector());
-		st.setString(4,vo.getActor());
-		st.setString(5,vo.getExp());
+		st.setInt(1,vo.getInventoryNo());	 
+		st.setString(2,vo.getInventoryPname());
+		st.setInt(3,vo.getPrice());
 
 		for (int i = 0; i<count; i++) {
 			// 5. sql 전송
@@ -50,16 +48,18 @@ public class InventoryModel implements InventoryDao{
 		con.close();
 	}
 
-	public ArrayList searchVideo(int sel, String word) throws Exception {
+	public ArrayList searchInventory(int sel, String word) throws Exception {
 		con = DriverManager.getConnection(url,user,pass);
 		PreparedStatement st = null;
 		ResultSet rs = null;
 
 		//2.연결 객체 
 		try {
-			String [] cols = {"TITLE","DIR"};
+			String [] cols = {"PNAME","PRICE"};
+		
+			
 			//3.SQL 문장 SELECT * FROM 테이블명  WHERE 감독 LIKE '%봉%'
-			String sql = "SELECT V_NUM, TITLE, GENR, DIR, ACTOR FROM VIDEO " 
+			String sql = "SELECT IVNUM, PNAME, PRICE, TO_CHAR(EXDATE,' YY / MM / DD ') EXDATE FROM INVENTORY " 
 					+ " WHERE " + cols[sel] + "  LIKE '%"+word+"%' ";
 			System.out.println(sql);
 			ArrayList list = new ArrayList();
@@ -71,11 +71,10 @@ public class InventoryModel implements InventoryDao{
 			while(rs.next()) {	// 반복문 실행될때마다 새로운 객체생성이므로 한번 실행시마다 만들어지는 객체를 ArrayList만들어 저장
 				ArrayList data = new ArrayList();
 				//data에 각 컬럼에서 얻어 온 갑을 추가
-				data.add(rs.getInt("V_NUM"));
-				data.add(rs.getString("TITLE"));
-				data.add(rs.getString("GENR"));
-				data.add(rs.getString("DIR"));
-				data.add(rs.getString("ACTOR"));
+				data.add(rs.getInt("IVNUM"));
+				data.add(rs.getString("PNAME"));
+				data.add(rs.getInt("PRICE"));
+				data.add(rs.getString("EXDATE"));
 
 				//7.닫기
 				list.add(data);
@@ -95,20 +94,18 @@ public class InventoryModel implements InventoryDao{
 		ResultSet rs = null;
 		PreparedStatement st = null;
 		ArrayList list = new ArrayList();
-		String sql ="SELECT V.V_NUM V_NUM, V.TITLE TITLE, C.NAME NAME, C.TEL TEL, R.RENTDAY+3 RENTDAY, R.AVAILABLE AVAILABLE  "
-				+ "  FROM RENT R INNER JOIN VIDEO V  " 
-				+ "  ON R.V_NUM=V.V_NUM  " 
-				+ "  INNER JOIN CUSTOMER C  " 
-				+ "  ON R.TEL=C.TEL " 
-				+ "  WHERE AVAILABLE = 'F' " ;
+		String sql ="SELECT PNAME , PCOUNT "
+				+ "  FROM INVENTORY  " 
+				+ "  WHERE PCOUNT<=15  " 
+				+ "  GROUP BY PNAME, PCOUNT " ;
+		
 		st = con.prepareStatement(sql);
 		rs = st.executeQuery();
 		while(rs.next()) {	// 반복문 실행될때마다 새로운 객체생성이므로 한번 실행시마다 만들어지는 객체를 ArrayList만들어 저장
 			ArrayList data = new ArrayList();
 			//data에 각 컬럼에서 얻어 온 갑을 추가
-			data.add(rs.getInt("V_NUM"));
-			data.add(rs.getString("TITLE"));
-			data.add(rs.getString("NAME"));
+			data.add(rs.getString("PNAME"));
+			data.add(rs.getInt("PCOUNT"));
 //			data.add(rs.getString("TEL"));
 //			data.add(rs.getString("RENTDAY"));
 //			data.add(rs.getString("AVAILABLE"));
@@ -124,21 +121,18 @@ public class InventoryModel implements InventoryDao{
 		ResultSet rs = null;
 		PreparedStatement st = null;
 		ArrayList list = new ArrayList();
-		String sql ="SELECT V.V_NUM V_NUM, V.TITLE TITLE, C.NAME NAME, C.TEL TEL, R.RENTDAY+3 RENTDAY, R.AVAILABLE AVAILABLE  "
-				+ "  FROM RENT R INNER JOIN VIDEO V  " 
-				+ "  ON R.V_NUM=V.V_NUM  " 
-				+ "  INNER JOIN CUSTOMER C  " 
-				+ "  ON R.TEL=C.TEL " 
-				+ "  WHERE AVAILABLE = 'F' " ;
+		String sql ="SELECT IVNUM, PNAME, ROUND(EXDATE-SYSDATE) LEFT  "
+				+ "  FROM INVENTORY  " 
+				+ "  WHERE ROUND(EXDATE-SYSDATE)<=7 " ;
 		st = con.prepareStatement(sql);
 		rs = st.executeQuery();
 		while(rs.next()) {	// 반복문 실행될때마다 새로운 객체생성이므로 한번 실행시마다 만들어지는 객체를 ArrayList만들어 저장
 			ArrayList data = new ArrayList();
 			//data에 각 컬럼에서 얻어 온 갑을 추가
-			data.add(rs.getInt("V_NUM"));
-			data.add(rs.getString("TITLE"));
+			data.add(rs.getInt("IVNUM"));
+			data.add(rs.getString("PNAME"));
 //			data.add(rs.getString("NAME"));
-			data.add(rs.getString("TEL"));
+			data.add(rs.getString("LEFT"));
 //			data.add(rs.getString("RENTDAY"));
 //			data.add(rs.getString("AVAILABLE"));
 
@@ -158,17 +152,15 @@ public class InventoryModel implements InventoryDao{
 		ResultSet rs = null;
 		try {
 			con = DriverManager.getConnection(url,user,pass);
-			String sql = "SELECT * FROM VIDEO WHERE V_NUM = ?";
+			String sql = "SELECT IVNUM, PNAME, PRICE,TO_CHAR(EXDATE,' YY / MM / DD ') EXDATE FROM Inventory WHERE IVNUM = ?";
 			st = con.prepareStatement(sql);
 			st.setInt(1, vNum); 
 			rs = st.executeQuery();
 			while(rs.next()) {	// 반복문 실행될때마다 새로운 객체생성이므로 한번 실행시마다 만들어지는 객체를 ArrayList만들어 저장	// primary => if
-				vo.setVideoNo(rs.getInt("V_NUM"));
-				vo.setVideoName(rs.getString("TITLE"));
-				vo.setGenre(rs.getString("GENR"));
-				vo.setDirector(rs.getString("DIR"));
-				vo.setActor(rs.getString("ACTOR"));
-				vo.setExp(rs.getString("DIS"));
+				vo.setInventoryNo(rs.getInt("IVNUM"));
+				vo.setInventoryPname(rs.getString("PNAME"));
+				vo.setPrice(Integer.parseInt(rs.getString("PRICE")));
+				vo.setExdate(rs.getString("EXDATE"));
 			}
 
 			return vo;
@@ -181,21 +173,19 @@ public class InventoryModel implements InventoryDao{
 	}
 
 
-	public void modifyVideo(Inventory vo) throws Exception {
+	public void modifyInventory(Inventory vo) throws Exception {
 		// 2. Connection 연결객체 얻어오기
 		Connection con = DriverManager.getConnection(url, user, pass);
 		// 3. sql 문장 만들기
-		String sql = "UPDATE VIDEO SET TITLE=?, GENR=?, DIR=?, ACTOR=?, DIS=?  WHERE V_NUM=?";
+		String sql = "UPDATE INVENTORY SET PNAME=?, PRICE=?, EXDATE=? WHERE IVNUM=?";
    
 		// 4. sql 전송객체 (PreparedStatement)	
 		PreparedStatement st = con.prepareStatement(sql);
 		
-		st.setString(1,vo.getVideoName());	 
-		st.setString(2,vo.getGenre());
-		st.setString(3,vo.getDirector());
-		st.setString(4,vo.getActor());
-		st.setString(5,vo.getExp());
-		st.setInt(6,vo.getVideoNo());
+		st.setString(1,vo.getInventoryPname());
+		st.setInt(2,vo.getPrice());
+		st.setString(3,vo.getExdate());
+		st.setInt(4,vo.getInventoryNo());
 		st.executeUpdate();
 	
 		// 6. 닫기
@@ -203,12 +193,12 @@ public class InventoryModel implements InventoryDao{
 		con.close();
 	}
 
-	public void deleteVideo(String vnum) throws Exception {
+	public void deleteInventory(String vnum) throws Exception {
 		// 2. Connection 연결객체 얻어오기
 		Connection con = DriverManager.getConnection(url, user, pass);
 		// 3. sql 문장 만들기
-		String sql = "DELETE FROM VIDEO "
-				+ "  WHERE V_NUM=? ";
+		String sql = "DELETE FROM INVENTORY "
+				+ "  WHERE IVNUM=? ";
 
 		// 4. sql 전송객체 (PreparedStatement)	
 		PreparedStatement st = con.prepareStatement(sql);
